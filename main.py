@@ -1,8 +1,8 @@
-import os
+import numpy as np
 
-x=1+2
+x = 1 + 2 + np.int(3)
 
-unused = 5
+print(x)
 
 def main():
     print("Hello from hw5!")
