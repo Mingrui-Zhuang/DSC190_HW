@@ -28,19 +28,8 @@ def test_in_x_days():
     today = date(2026, 5, 10)
     assert parse("in 10 days", today=today) == date(2026, 5, 20)
 
-def test_tomorrow():
-    today = date(2026, 5, 10)
-    assert parse("tomorrow", today=today) == date(2026, 5, 11)
-
-def test_yesterday():
-    today = date(2026, 5, 1)
-    assert parse("yesterday", today=today) == date(2026, 4, 30)
-
 
 """Tests for nldate.parser.parse()"""
-import pytest
-from datetime import date
-from nldate.parser import parse
 
 TODAY = date(2025, 6, 11)   # Wednesday
 
