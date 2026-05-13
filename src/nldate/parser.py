@@ -17,36 +17,73 @@ from dateutil.relativedelta import relativedelta  # type: ignore[import-untyped]
 # ---------------------------------------------------------------------------
 
 _MONTHS = {
-    "january": 1, "jan": 1,
-    "february": 2, "feb": 2,
-    "march": 3, "mar": 3,
-    "april": 4, "apr": 4,
+    "january": 1,
+    "jan": 1,
+    "february": 2,
+    "feb": 2,
+    "march": 3,
+    "mar": 3,
+    "april": 4,
+    "apr": 4,
     "may": 5,
-    "june": 6, "jun": 6,
-    "july": 7, "jul": 7,
-    "august": 8, "aug": 8,
-    "september": 9, "sep": 9, "sept": 9,
-    "october": 10, "oct": 10,
-    "november": 11, "nov": 11,
-    "december": 12, "dec": 12,
+    "june": 6,
+    "jun": 6,
+    "july": 7,
+    "jul": 7,
+    "august": 8,
+    "aug": 8,
+    "september": 9,
+    "sep": 9,
+    "sept": 9,
+    "october": 10,
+    "oct": 10,
+    "november": 11,
+    "nov": 11,
+    "december": 12,
+    "dec": 12,
 }
 
 _WEEKDAYS = {
-    "monday": 0, "mon": 0,
-    "tuesday": 1, "tue": 1, "tues": 1,
-    "wednesday": 2, "wed": 2,
-    "thursday": 3, "thu": 3, "thur": 3, "thurs": 3,
-    "friday": 4, "fri": 4,
-    "saturday": 5, "sat": 5,
-    "sunday": 6, "sun": 6,
+    "monday": 0,
+    "mon": 0,
+    "tuesday": 1,
+    "tue": 1,
+    "tues": 1,
+    "wednesday": 2,
+    "wed": 2,
+    "thursday": 3,
+    "thu": 3,
+    "thur": 3,
+    "thurs": 3,
+    "friday": 4,
+    "fri": 4,
+    "saturday": 5,
+    "sat": 5,
+    "sunday": 6,
+    "sun": 6,
 }
 
 _WRITTEN_NUMBERS = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
-    "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
-    "nineteen": 19, "twenty": 20,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
 }
 
 
@@ -69,6 +106,7 @@ def _clean(s: str) -> str:
 # Individual parsers  (each returns date | None)
 # ---------------------------------------------------------------------------
 
+
 def _parse_today_tomorrow_yesterday(s: str, today: date) -> Optional[date]:
     if s == "today":
         return today
@@ -80,9 +118,8 @@ def _parse_today_tomorrow_yesterday(s: str, today: date) -> Optional[date]:
 
 
 # "next tuesday", "last monday", "this friday"
-_WEEKDAY_RE = re.compile(
-    r"^(next|last|this)\s+(" + "|".join(_WEEKDAYS) + r")$"
-)
+_WEEKDAY_RE = re.compile(r"^(next|last|this)\s+(" + "|".join(_WEEKDAYS) + r")$")
+
 
 def _parse_relative_weekday(s: str, today: date) -> Optional[date]:
     m = _WEEKDAY_RE.match(s)
@@ -114,16 +151,12 @@ _ABS_MONTH_NAME_RE = re.compile(
     + r")\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$"
 )
 _ABS_MONTH_NAME_RE2 = re.compile(
-    r"^("
-    + "|".join(_MONTHS)
-    + r")\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})$"
+    r"^(" + "|".join(_MONTHS) + r")\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})$"
 )
 _ABS_ISO_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
 _ABS_SLASH_RE = re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$")
 _ABS_DAY_MONTH_YEAR_RE = re.compile(
-    r"^(\d{1,2})(?:st|nd|rd|th)?\s+("
-    + "|".join(_MONTHS)
-    + r")\.?\s+(\d{4})$"
+    r"^(\d{1,2})(?:st|nd|rd|th)?\s+(" + "|".join(_MONTHS) + r")\.?\s+(\d{4})$"
 )
 
 
@@ -181,7 +214,9 @@ def _apply_chunks(base: date, chunks: list[tuple[str, str]], forward: bool) -> d
         elif u == "day":
             td_days += n
     sign = 1 if forward else -1
-    result = cast(date, base + relativedelta(**{k: v * sign for k, v in rd_kwargs.items()}))
+    result = cast(
+        date, base + relativedelta(**{k: v * sign for k, v in rd_kwargs.items()})
+    )
     result += timedelta(days=td_days * sign)
     return result
 
@@ -236,6 +271,7 @@ def _parse_offset(s: str, today: date) -> Optional[date]:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def parse(s: str, today: Optional[date] = None) -> date:
     """
