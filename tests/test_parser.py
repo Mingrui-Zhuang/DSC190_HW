@@ -1,6 +1,6 @@
 from datetime import date
 import pytest
-from nldate.parser import parse
+from src.nldate.parser import parse
 
 
 def test_absolute_date():
