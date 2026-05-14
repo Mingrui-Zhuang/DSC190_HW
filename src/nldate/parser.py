@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from typing import Optional, Any, cast
+from typing import Optional
 
 
 # ---------------------------------------------------------------------------
@@ -153,7 +153,8 @@ _ABS_MONTH_NAME_RE2 = re.compile(
     r"^(" + "|".join(_MONTHS) + r")\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})$"
 )
 _ABS_ISO_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})$")
-_ABS_SLASH_RE = re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$")
+_ABS_ISO_SLASH_RE = re.compile(r"^(\d{4})/(\d{2})/(\d{2})$")  # 2025/12/04
+_ABS_SLASH_RE = re.compile(r"^(\d{1,2})/(\d{1,2})/(\d{4})$")  # MM/DD/YYYY
 _ABS_DAY_MONTH_YEAR_RE = re.compile(
     r"^(\d{1,2})(?:st|nd|rd|th)?\s+(" + "|".join(_MONTHS) + r")\.?\s+(\d{4})$"
 )
@@ -162,6 +163,11 @@ _ABS_DAY_MONTH_YEAR_RE = re.compile(
 def _parse_absolute(s: str) -> Optional[date]:
     # ISO
     m = _ABS_ISO_RE.match(s)
+    if m:
+        return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+    # YYYY/MM/DD
+    m = _ABS_ISO_SLASH_RE.match(s)
     if m:
         return date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
@@ -213,8 +219,7 @@ def _apply_chunks(base: date, chunks: list[tuple[str, str]], forward: bool) -> d
         elif u == "day":
             td_days += n
     sign = 1 if forward else -1
-    rd_args: Any = {k: v * sign for k, v in rd_kwargs.items()}
-    result = base + relativedelta(**cast(Any, rd_args))
+    result = base + relativedelta(**{k: v * sign for k, v in rd_kwargs.items()})
     result += timedelta(days=td_days * sign)
     return result
 
@@ -237,8 +242,7 @@ def _parse_offset(s: str, today: date) -> Optional[date]:
     m = _SIMPLE_OFFSET_RE.match(s)
     if m:
         chunk_str = m.group(1)
-        suffix = m.group(m.lastindex) if m.lastindex is not None else ""
-        suffix = suffix.lower()
+        suffix = (m.group(m.lastindex) or "").lower()
         chunks = _CHUNK_RE.findall(chunk_str)
         if chunks:
             forward = suffix not in ("ago",)
