@@ -14,7 +14,7 @@ df["weekday"] = pd.to_datetime(
     df["date"]
 ).dt.day_name()
 
-os.makedirs("data/transformed", exist_ok=True)
+os.makedirs("data/features", exist_ok=True)
 
 df.to_csv(output_path, index=False)
 
