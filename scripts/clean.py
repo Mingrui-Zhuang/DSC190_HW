@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 VALID_EVENTS = {
     "click",
@@ -34,6 +35,8 @@ df["timestamp"] = (
     df["timestamp"]
     .dt.strftime("%Y-%m-%dT%H:%M:%S")
 )
+
+os.makedirs("data/clean", exist_ok=True)
 
 df.to_csv(output_path, index=False)
 
