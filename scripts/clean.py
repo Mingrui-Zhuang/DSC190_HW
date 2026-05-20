@@ -20,6 +20,8 @@ df = df.dropna()
 # Positive durations only
 df = df[df["duration_seconds"] > 0]
 
+df["duration_seconds"] = (df["duration_seconds"].astype(int))
+
 # Valid event type
 df = df[df["event_type"].isin(VALID_EVENTS)]
 
