@@ -1,0 +1,40 @@
+import pandas as pd
+
+VALID_EVENTS = {
+    "click",
+    "view",
+    "purchase",
+    "login",
+    "logout"
+}
+
+input_path = "data/raw/events.csv"
+output_path = "data/clean/events.csv"
+
+df = pd.read_csv(input_path)
+
+# Drop missing rows
+df = df.dropna()
+
+# Positive durations only
+df = df[df["duration_seconds"] > 0]
+
+# Valid event type
+df = df[df["event_type"].isin(VALID_EVENTS)]
+
+# Normalize timestamp
+df["timestamp"] = pd.to_datetime(
+    df["timestamp"],
+    errors="coerce"
+)
+
+df = df.dropna(subset=["timestamp"])
+
+df["timestamp"] = (
+    df["timestamp"]
+    .dt.strftime("%Y-%m-%dT%H:%M:%S")
+)
+
+df.to_csv(output_path, index=False)
+
+print("Clean stage complete.")
