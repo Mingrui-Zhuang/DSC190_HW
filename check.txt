@@ -1,3 +1,0 @@
-uv run ruff format --check
-uv run mypy src/nldate
-uv run pytest
